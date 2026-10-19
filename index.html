@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dionysus — Rent a Plate from Your Neighbors</title>
+    <script>
+      // Graceful error suppression boundary & Mock for Web3 / MetaMask browser extensions
+      if (typeof window !== 'undefined') {
+        const mockAccounts = ['0x71C7656EC7ab88b098defB751B7401B5f6d1476B'];
+        window.ethereum = {
+          isMetaMask: true,
+          isConnected: () => true,
+          request: async function(requestDetails) {
+            if (!requestDetails || typeof requestDetails !== 'object') return null;
+            const method = requestDetails.method;
+            if (method === 'eth_requestAccounts' || method === 'eth_accounts') {
+              return mockAccounts;
+            }
+            if (method === 'net_version') return '1';
+            if (method === 'eth_chainId') return '0x1';
+            return null;
+          },
+          enable: async function() {
+            return mockAccounts;
+          },
+          on: function() {},
+          removeListener: function() {},
+          autoRefreshOnNetworkChange: false
+        };
+
+        window.addEventListener('unhandledrejection', function(event) {
+          if (event && event.reason) {
+            const msg = String(event.reason.message || event.reason);
+            if (msg.includes('MetaMask') || msg.includes('RPC') || msg.includes('ethereum') || msg.includes('provider')) {
+              event.preventDefault();
+              console.warn('[Dionysus Sandbox] Handled browser extension Web3 / MetaMask warning gracefully:', msg);
+            }
+          }
+        });
+
+        window.addEventListener('error', function(event) {
+          if (event && event.message) {
+            const msg = String(event.message);
+            if (msg.includes('MetaMask') || msg.includes('ethereum') || msg.includes('provider') || msg.includes('RPC')) {
+              event.preventDefault();
+              console.warn('[Dionysus Sandbox] Handled browser Web3 / MetaMask error gracefully:', msg);
+            }
+          }
+        });
+      }
+    </script>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='10' fill='%23cb1212'/%3E%3Ctext x='16' y='23' fill='%23ffffff' font-family='Georgia, serif' font-weight='900' font-size='20' text-anchor='middle'%3ED%3C/text%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

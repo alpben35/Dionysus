@@ -1,0 +1,6 @@
+{
+  "name": "Dionysus",
+  "description": "Artisanal neighborhood-kitchen feast marketplace. Rent a plate from your neighbor's kitchen, featuring real-time photo uploads, cook tracking, and community trust reviews.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
